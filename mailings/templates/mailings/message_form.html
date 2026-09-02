@@ -1,0 +1,38 @@
+{% extends "mailings/base.html" %}
+
+{% block title %}
+    Сообщение
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="h3 mb-4">
+                        Сообщение
+                    </h1>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            Сохранить
+                        </button>
+
+                        <a
+                            href="{% url 'mailings:message_list' %}"
+                            class="btn btn-outline-secondary"
+                        >
+                            Отмена
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

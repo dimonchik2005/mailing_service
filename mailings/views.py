@@ -12,8 +12,8 @@ from django.views.generic import (
     UpdateView,
 )
 
-from mailings.forms import RecipientForm
-from mailings.models import Mailing, Recipient
+from mailings.forms import (RecipientForm, MessageForm)
+from mailings.models import (Mailing, Recipient, Message)
 
 
 def user_is_manager(user) -> bool:
@@ -156,4 +156,82 @@ class RecipientDeleteView(
     )
     success_url = reverse_lazy(
         "mailings:recipient_list"
+    )
+
+class MessageOwnerQuerysetMixin:
+    """Показывает пользователю только его сообщения."""
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        if user.is_superuser:
+            return queryset
+
+        return queryset.filter(owner=user)
+
+
+class MessageListView(
+    LoginRequiredMixin,
+    MessageOwnerQuerysetMixin,
+    ListView,
+):
+    model = Message
+    template_name = "mailings/message_list.html"
+    context_object_name = "message_list"
+
+
+class MessageDetailView(
+    LoginRequiredMixin,
+    MessageOwnerQuerysetMixin,
+    DetailView,
+):
+    model = Message
+    template_name = "mailings/message_detail.html"
+    context_object_name = "mailing_message"
+
+
+class MessageCreateView(
+    LoginRequiredMixin,
+    CreateView,
+):
+    model = Message
+    form_class = MessageForm
+    template_name = "mailings/message_form.html"
+    success_url = reverse_lazy(
+        "mailings:message_list"
+    )
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+
+class MessageUpdateView(
+    LoginRequiredMixin,
+    MessageOwnerQuerysetMixin,
+    UpdateView,
+):
+    model = Message
+    form_class = MessageForm
+    template_name = "mailings/message_form.html"
+
+    def get_success_url(self):
+        return reverse(
+            "mailings:message_detail",
+            kwargs={"pk": self.object.pk},
+        )
+
+
+class MessageDeleteView(
+    LoginRequiredMixin,
+    MessageOwnerQuerysetMixin,
+    DeleteView,
+):
+    model = Message
+    template_name = (
+        "mailings/message_confirm_delete.html"
+    )
+    success_url = reverse_lazy(
+        "mailings:message_list"
     )
