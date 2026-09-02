@@ -1,0 +1,135 @@
+{% extends "mailings/base.html" %}
+
+{% block title %}
+    Вход — Mailing Service
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .login-page {
+            min-height: calc(100vh - 130px);
+        }
+
+        .login-card {
+            border: 0;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .login-cover {
+            background:
+                linear-gradient(
+                    135deg,
+                    #0d6efd,
+                    #6610f2
+                );
+        }
+
+        .login-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div
+        class="login-page row
+               align-items-center justify-content-center"
+    >
+        <div class="col-xl-9 col-lg-10">
+            <div class="card login-card shadow-lg">
+                <div class="row g-0">
+                    <div
+                        class="col-md-6 login-cover
+                               text-white p-5
+                               d-none d-md-flex
+                               flex-column justify-content-center"
+                    >
+                        <div class="login-icon mb-4">
+                            ✉
+                        </div>
+
+                        <h1 class="display-6 fw-bold">
+                            Mailing Service
+                        </h1>
+
+                        <p class="lead mb-0 opacity-75">
+                            Управляйте клиентами,
+                            создавайте рассылки и
+                            отслеживайте результаты
+                            отправок в одном сервисе.
+                        </p>
+                    </div>
+
+                    <div class="col-md-6 bg-white p-4 p-lg-5">
+                        <h2 class="fw-bold mb-2">
+                            Добро пожаловать
+                        </h2>
+
+                        <p class="text-secondary mb-4">
+                            Введите email и пароль
+                            для входа в систему.
+                        </p>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <form method="post">
+                            {% csrf_token %}
+
+                            {% if next %}
+                                <input
+                                    type="hidden"
+                                    name="next"
+                                    value="{{ next }}"
+                                >
+                            {% endif %}
+
+                            {% for field in form %}
+                                <div class="mb-3">
+                                    <label
+                                        for="{{ field.id_for_label }}"
+                                        class="form-label fw-semibold"
+                                    >
+                                        {{ field.label }}
+                                    </label>
+
+                                    {{ field }}
+
+                                    {% for error in field.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary btn-lg w-100 mt-2"
+                            >
+                                Войти
+                            </button>
+                        </form>
+
+                        <p class="text-secondary small text-center mt-4 mb-0">
+                            Доступ к сервису защищён авторизацией
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

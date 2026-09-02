@@ -1,0 +1,65 @@
+{% extends "mailings/base.html" %}
+
+{% block title %}
+    Получатели
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between mb-4">
+        <h1>Получатели</h1>
+
+        <a
+            href="{% url 'mailings:recipient_create' %}"
+            class="btn btn-primary"
+        >
+            Добавить получателя
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {% if recipients %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Ф. И. О.</th>
+                                <th>Email</th>
+                                <th>Владелец</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for recipient in recipients %}
+                                <tr>
+                                    <td>
+                                        {{ recipient.full_name }}
+                                    </td>
+                                    <td>
+                                        {{ recipient.email }}
+                                    </td>
+                                    <td>
+                                        {{ recipient.owner.email }}
+                                    </td>
+                                    <td class="text-end">
+                                        <a
+                                            href="{% url 'mailings:recipient_detail' recipient.pk %}"
+                                            class="btn btn-outline-primary btn-sm"
+                                        >
+                                            Подробнее
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="mb-0">
+                    Получателей пока нет.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

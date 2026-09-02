@@ -1,0 +1,45 @@
+{% extends "mailings/base.html" %}
+
+{% block content %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1>{{ recipient.full_name }}</h1>
+
+            <p>
+                <strong>Email:</strong>
+                {{ recipient.email }}
+            </p>
+
+            <p>
+                <strong>Комментарий:</strong>
+                {{ recipient.comment|default:"—" }}
+            </p>
+
+            <div class="d-flex gap-2">
+                <a
+                    href="{% url 'mailings:recipient_list' %}"
+                    class="btn btn-outline-secondary"
+                >
+                    Назад
+                </a>
+
+                {% if user == recipient.owner or user.is_superuser %}
+                    <a
+                        href="{% url 'mailings:recipient_update' recipient.pk %}"
+                        class="btn btn-warning"
+                    >
+                        Редактировать
+                    </a>
+
+                    <a
+                        href="{% url 'mailings:recipient_delete' recipient.pk %}"
+                        class="btn btn-danger"
+                    >
+                        Удалить
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

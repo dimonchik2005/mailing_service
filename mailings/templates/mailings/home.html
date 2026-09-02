@@ -1,0 +1,55 @@
+{% extends "mailings/base.html" %}
+
+{% block title %}
+    Главная
+{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">
+        Статистика рассылок
+    </h1>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary">
+                        Всего рассылок
+                    </p>
+
+                    <p class="display-5 fw-bold">
+                        {{ total_mailings }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary">
+                        Активные рассылки
+                    </p>
+
+                    <p class="display-5 fw-bold text-success">
+                        {{ active_mailings }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary">
+                        Уникальные получатели
+                    </p>
+
+                    <p class="display-5 fw-bold text-primary">
+                        {{ unique_recipients }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
