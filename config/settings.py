@@ -12,11 +12,13 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 
+import certifi
+
 from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
-
+os.environ["SSL_CERT_FILE"] = certifi.where()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -136,3 +138,61 @@ AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "users:login"
 LOGIN_REDIRECT_URL = "mailings:home"
 LOGOUT_REDIRECT_URL = "users:login"
+
+EMAIL_BACKEND = os.getenv(
+    "EMAIL_BACKEND",
+    "django.core.mail.backends.console.EmailBackend",
+)
+
+EMAIL_HOST = os.getenv(
+    "EMAIL_HOST",
+    "smtp.mail.ru",
+)
+
+EMAIL_PORT = int(
+    os.getenv("EMAIL_PORT", "465")
+)
+
+EMAIL_USE_SSL = (
+    os.getenv("EMAIL_USE_SSL", "True").lower()
+    == "true"
+)
+
+EMAIL_USE_TLS = (
+    os.getenv("EMAIL_USE_TLS", "False").lower()
+    == "true"
+)
+
+EMAIL_HOST_USER = os.getenv(
+    "EMAIL_HOST_USER",
+)
+
+EMAIL_HOST_PASSWORD = os.getenv(
+    "EMAIL_HOST_PASSWORD",
+)
+
+DEFAULT_FROM_EMAIL = os.getenv(
+    "DEFAULT_FROM_EMAIL",
+    EMAIL_HOST_USER,
+)
+
+CACHES = {
+    "default": {
+        "BACKEND": (
+            "django_redis.cache.RedisCache"
+        ),
+        "LOCATION": os.getenv(
+            "REDIS_URL",
+            "redis://127.0.0.1:6379/1",
+        ),
+        "OPTIONS": {
+            "CLIENT_CLASS": (
+                "django_redis.client.DefaultClient"
+            ),
+        },
+    }
+}
+
+CACHE_TTL = int(
+    os.getenv("CACHE_TTL", "60")
+)

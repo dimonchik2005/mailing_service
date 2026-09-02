@@ -1,0 +1,128 @@
+{% extends "mailings/base.html" %}
+
+{% block title %}
+{{ mailing.message.subject }}
+{% endblock %}
+
+{% block content %}
+{% if user == mailing.owner or user.is_superuser %}
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between gap-3 mb-3">
+                <h1 class="h3 mb-0">
+                    {{ mailing.message.subject }}
+                </h1>
+
+                <span class="badge text-bg-primary align-self-start">
+                    {{ mailing.status }}
+                </span>
+            </div>
+
+            <p>
+                <strong>Владелец:</strong>
+                {{ mailing.owner.email }}
+            </p>
+
+            <p>
+                <strong>Начало:</strong>
+                {{ mailing.start_time|date:"d.m.Y H:i" }}
+            </p>
+
+            <p>
+                <strong>Окончание:</strong>
+                {{ mailing.end_time|date:"d.m.Y H:i" }}
+            </p>
+
+            <p>
+                <strong>Состояние:</strong>
+
+                {% if mailing.is_active %}
+                <span class="text-success">включена</span>
+                {% else %}
+                <span class="text-danger">отключена</span>
+                {% endif %}
+            </p>
+
+            <hr>
+
+            <h2 class="h5">Сообщение</h2>
+
+            <p class="text-secondary">
+                {{ mailing.message.body|linebreaksbr }}
+            </p>
+
+            <hr>
+
+            <h2 class="h5">Получатели</h2>
+
+            <ul class="list-group mb-4">
+                {% for recipient in mailing.recipients.all %}
+                <li class="list-group-item">
+                    {{ recipient.full_name }} — {{ recipient.email }}
+                </li>
+                {% empty %}
+                <li class="list-group-item text-secondary">
+                    Получатели не выбраны
+                </li>
+                {% endfor %}
+            </ul>
+            {% if perms.mailings.can_disable_mailing and mailing.is_active %}
+            <form
+                    method="post"
+                    action="{% url 'mailings:mailing_disable' mailing.pk %}"
+                    class="d-inline"
+            >
+                {% csrf_token %}
+
+                <button
+                        type="submit"
+                        class="btn btn-outline-danger"
+                >
+                    Отключить рассылку
+                </button>
+            </form>
+            {% endif %}
+            <div class="d-flex flex-wrap gap-2">
+                <a
+                        href="{% url 'mailings:mailing_list' %}"
+                        class="btn btn-outline-secondary"
+                >
+                    Назад
+                </a>
+
+                {% if user == mailing.owner or user.is_superuser %}
+                <a
+                        href="{% url 'mailings:mailing_update' mailing.pk %}"
+                        class="btn btn-warning"
+                >
+                    Редактировать
+                </a>
+                {% if mailing.is_active %}
+                <form
+                        method="post"
+                        action="{% url 'mailings:mailing_send' mailing.pk %}"
+                        class="d-inline"
+                >
+                    {% csrf_token %}
+
+                    <button
+                            type="submit"
+                            class="btn btn-success"
+                    >
+                        Запустить рассылку
+                    </button>
+                </form>
+                {% endif %}
+                <a
+                        href="{% url 'mailings:mailing_delete' mailing.pk %}"
+                        class="btn btn-danger"
+                >
+                    Удалить
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

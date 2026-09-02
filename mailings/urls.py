@@ -12,6 +12,14 @@ from mailings.views import (
     MessageDetailView,
     MessageListView,
     MessageUpdateView,
+    MailingCreateView,
+    MailingDeleteView,
+    MailingDetailView,
+    MailingListView,
+    MailingUpdateView,
+    MailingSendView,
+    MailingDisableView,
+    StatisticsView,
 )
 
 app_name = "mailings"
@@ -71,5 +79,45 @@ urlpatterns = [
         "messages/<int:pk>/delete/",
         MessageDeleteView.as_view(),
         name="message_delete",
+    ),
+    path(
+        "mailings/",
+        MailingListView.as_view(),
+        name="mailing_list",
+    ),
+    path(
+        "mailings/create/",
+        MailingCreateView.as_view(),
+        name="mailing_create",
+    ),
+    path(
+        "mailings/<int:pk>/",
+        MailingDetailView.as_view(),
+        name="mailing_detail",
+    ),
+    path(
+        "mailings/<int:pk>/update/",
+        MailingUpdateView.as_view(),
+        name="mailing_update",
+    ),
+    path(
+        "mailings/<int:pk>/delete/",
+        MailingDeleteView.as_view(),
+        name="mailing_delete",
+    ),
+    path(
+        "mailings/<int:pk>/send/",
+        MailingSendView.as_view(),
+        name="mailing_send",
+    ),
+    path(
+        "mailings/<int:pk>/disable/",
+        MailingDisableView.as_view(),
+        name="mailing_disable",
+    ),
+    path(
+        "statistics/",
+        StatisticsView.as_view(),
+        name="statistics",
     ),
 ]

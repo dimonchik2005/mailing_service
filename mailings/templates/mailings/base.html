@@ -45,6 +45,26 @@
             >
                 Сообщения
             </a>
+            <a
+                    class="nav-link"
+                    href="{% url 'mailings:mailing_list' %}"
+            >
+                Рассылки
+            </a>
+            <a
+                    class="nav-link"
+                    href="{% url 'mailings:statistics' %}"
+            >
+                Статистика
+            </a>
+            {% if perms.users.can_block_user %}
+            <a
+                    class="nav-link"
+                    href="{% url 'users:user_list' %}"
+            >
+                Пользователи
+            </a>
+            {% endif %}
         </div>
 
         <div class="d-flex align-items-center gap-3">
