@@ -99,7 +99,10 @@ class StatisticsView(
             )
         )
 
-        if not user.is_superuser:
+        if not (
+                user.is_superuser
+                or user_is_manager(user)
+        ):
             attempts = attempts.filter(
                 mailing__owner=user,
             )
