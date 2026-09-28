@@ -1,0 +1,46 @@
+{% extends "mailings/base.html" %}
+
+{% block title %}
+    {{ mailing_message.subject }}
+{% endblock %}
+
+{% block content %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1>
+                {{ mailing_message.subject }}
+            </h1>
+
+            <hr>
+
+            <div class="mb-4">
+                {{ mailing_message.body|linebreaks }}
+            </div>
+
+            <div class="d-flex gap-2">
+                <a
+                    href="{% url 'mailings:message_list' %}"
+                    class="btn btn-outline-secondary"
+                >
+                    Назад
+                </a>
+
+                {% if user == mailing_message.owner or user.is_superuser %}
+                    <a
+                        href="{% url 'mailings:message_update' mailing_message.pk %}"
+                        class="btn btn-warning"
+                    >
+                        Редактировать
+                    </a>
+
+                    <a
+                        href="{% url 'mailings:message_delete' mailing_message.pk %}"
+                        class="btn btn-danger"
+                    >
+                        Удалить
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
