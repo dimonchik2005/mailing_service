@@ -129,9 +129,8 @@ class Mailing(models.Model):
         errors = {}
 
         if (
-            self.start_time
-            and self._state.adding
-            and self.start_time < timezone.now()
+                self.start_time
+                and self.start_time < timezone.now()
         ):
             errors["start_time"] = (
                 "Время начала не может быть в прошлом."

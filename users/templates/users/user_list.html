@@ -1,0 +1,116 @@
+{% extends "mailings/base.html" %}
+
+{% block title %}
+    Пользователи
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Пользователи сервиса</h1>
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Подтверждение</th>
+                        <th>Состояние</th>
+                        <th>Роль</th>
+                        <th class="text-end">Действие</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for account in users %}
+                        <tr>
+                            <td>{{ account.email }}</td>
+
+                            <td>
+                                {% if account.is_email_verified %}
+                                    <span class="badge text-bg-success">
+                                        Подтверждён
+                                    </span>
+                                {% else %}
+                                    <span class="badge text-bg-warning">
+                                        Не подтверждён
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if account.is_active %}
+                                    <span class="text-success">
+                                        Активен
+                                    </span>
+                                {% else %}
+                                    <span class="text-danger">
+                                        Заблокирован
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if account.is_superuser %}
+                                    Суперпользователь
+                                {% elif account.groups.all %}
+                                    {% for group in account.groups.all %}
+                                        {{ group.name }}
+                                        {% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    Пользователь
+                                {% endif %}
+                            </td>
+
+                            <td class="text-end">
+                                {% if account == user %}
+                                    <span class="text-secondary">
+                                        Текущий аккаунт
+                                    </span>
+                                {% elif account.is_superuser %}
+                                    <span class="text-secondary">
+                                        Недоступно
+                                    </span>
+                                {% else %}
+                                    <form
+                                        method="post"
+                                        action="{% url 'users:user_toggle_active' account.pk %}"
+                                    >
+                                        {% csrf_token %}
+
+                                        {% if account.is_active %}
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                            >
+                                                Заблокировать
+                                            </button>
+                                        {% else %}
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-outline-success"
+                                            >
+                                                Разблокировать
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td
+                                colspan="5"
+                                class="text-center text-secondary"
+                            >
+                                Пользователей нет
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

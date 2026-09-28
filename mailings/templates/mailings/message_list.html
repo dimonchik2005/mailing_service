@@ -1,0 +1,49 @@
+{% extends "mailings/base.html" %}
+
+{% block title %}
+    Сообщения
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between mb-4">
+        <h1>Сообщения</h1>
+
+        <a
+            href="{% url 'mailings:message_create' %}"
+            class="btn btn-primary"
+        >
+            Создать сообщение
+        </a>
+    </div>
+
+    <div class="row g-4">
+        {% for mailing_message in message_list %}
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h2 class="h5">
+                            {{ mailing_message.subject }}
+                        </h2>
+
+                        <p class="text-secondary">
+                            {{ mailing_message.body|truncatechars:150 }}
+                        </p>
+
+                        <a
+                            href="{% url 'mailings:message_detail' mailing_message.pk %}"
+                            class="btn btn-outline-primary mt-auto"
+                        >
+                            Подробнее
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    Сообщений пока нет.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "mailings/base.html" %}
+
+{% block title %}
+    Удаление сообщения
+{% endblock %}
+
+{% block content %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="h3">
+                Удаление сообщения
+            </h1>
+
+            <p>
+                Удалить сообщение
+                «{{ object.subject }}»?
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn btn-danger"
+                >
+                    Удалить
+                </button>
+
+                <a
+                    href="{% url 'mailings:message_detail' object.pk %}"
+                    class="btn btn-outline-secondary"
+                >
+                    Отмена
+                </a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

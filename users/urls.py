@@ -1,13 +1,38 @@
 from django.contrib.auth.views import (
     LoginView,
     LogoutView,
+    PasswordResetCompleteView,
+    PasswordResetConfirmView,
+    PasswordResetDoneView,
+    PasswordResetView,
 )
-from django.urls import path
-from users.forms import UserLoginForm
+from django.urls import path, reverse_lazy
+from users.forms import (
+    UserLoginForm,
+    UserPasswordResetForm,
+    UserSetPasswordForm,
+)
+
+from users.views import (
+    UserListView,
+    UserToggleActiveView,
+    RegisterView,
+    VerifyEmailView,
+)
 
 app_name = "users"
 
 urlpatterns = [
+    path(
+        "register/",
+        RegisterView.as_view(),
+        name="register",
+    ),
+    path(
+        "verify/<uuid:token>/",
+        VerifyEmailView.as_view(),
+        name="verify_email",
+    ),
     path(
         "login/",
         LoginView.as_view(
@@ -20,5 +45,63 @@ urlpatterns = [
         "logout/",
         LogoutView.as_view(),
         name="logout",
+    ),
+    path(
+        "password-reset/",
+        PasswordResetView.as_view(
+            template_name="users/password_reset.html",
+            form_class=UserPasswordResetForm,
+            email_template_name=(
+                "users/password_reset_email.txt"
+            ),
+            subject_template_name=(
+                "users/password_reset_subject.txt"
+            ),
+            success_url=reverse_lazy(
+                "users:password_reset_done"
+            ),
+        ),
+        name="password_reset",
+    ),
+    path(
+        "password-reset/done/",
+        PasswordResetDoneView.as_view(
+            template_name=(
+                "users/password_reset_done.html"
+            ),
+        ),
+        name="password_reset_done",
+    ),
+    path(
+        "password-reset/<uidb64>/<token>/",
+        PasswordResetConfirmView.as_view(
+            template_name=(
+                "users/password_reset_confirm.html"
+            ),
+            form_class=UserSetPasswordForm,
+            success_url=reverse_lazy(
+                "users:password_reset_complete"
+            ),
+        ),
+        name="password_reset_confirm",
+    ),
+    path(
+        "password-reset/complete/",
+        PasswordResetCompleteView.as_view(
+            template_name=(
+                "users/password_reset_complete.html"
+            ),
+        ),
+        name="password_reset_complete",
+    ),
+    path(
+        "list/",
+        UserListView.as_view(),
+        name="user_list",
+    ),
+    path(
+        "<int:pk>/toggle-active/",
+        UserToggleActiveView.as_view(),
+        name="user_toggle_active",
     ),
 ]
